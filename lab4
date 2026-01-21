@@ -1,0 +1,33 @@
+import hashlib
+
+def run_task():
+    # 1. Генерація ключів
+    personal_data = "Olha2005apple"
+    priv_key = hashlib.sha256(personal_data.encode()).hexdigest()
+    pub_key = hashlib.sha256(priv_key.encode()).hexdigest()
+
+    print(f"Private Key: {priv_key}")
+    print(f"Public Key: {pub_key}\n")
+
+    # 2. Підписання документа
+    document = "Звіт по практичній роботі"
+    doc_hash = hashlib.sha256(document.encode()).hexdigest()
+    signature = hashlib.sha256((doc_hash + priv_key).encode()).hexdigest()
+
+    print(f"Document: {document}")
+    print(f"Signature: {signature}\n")
+
+    # 3. Функція перевірки
+    def verify(text, sign, key):
+        h = hashlib.sha256(text.encode()).hexdigest()
+        v = hashlib.sha256((h + key).encode()).hexdigest()
+        return "VALID" if v == sign else "INVALID"
+
+    # 4. Результати
+    print(f"Original check: {verify(document, signature, priv_key)}")
+
+    fake_doc = "Звіт по практичній роботі."
+    print(f"Modified check: {verify(fake_doc, signature, priv_key)}")
+
+if __name__ == "__main__":
+    run_task()
